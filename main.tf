@@ -50,6 +50,7 @@ resource "aws_vpc_peering_connection_options" "accepter" {
 # This VPC Routes #  Route from THIS route table to PEER cidr
 ###################
 resource "aws_route" "this_routes" {
+  depends_on = [aws_vpc_peering_connection.this]
   provider = aws.this
   # Only create routes for this route table if input dictates it, and in that case, for all combinations
   count                     = var.from_this ? length(local.this_routes) : 0
@@ -62,6 +63,7 @@ resource "aws_route" "this_routes" {
 # Peer VPC Routes #  Route from PEER route table to THIS cidr
 ###################
 resource "aws_route" "peer_routes" {
+  depends_on = [aws_vpc_peering_connection.this]
   provider = aws.peer
   # Only create routes for peer route table if input dictates it, and in that case, for all combinations
   count                     = var.from_peer ? length(local.peer_routes) : 0
